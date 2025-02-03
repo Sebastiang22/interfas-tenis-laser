@@ -1,31 +1,32 @@
+<!-- components/Creditos.vue -->
 <template>
   <div class="creditos-container">
     <h2>Detalles de Crédito - Cliente {{ clienteId }}</h2>
     <button @click="volver">Volver</button>
 
-    <div v-if="clienteCredito" class="credito-info">
+    <div v-if="clienteCredito">
       <p><strong>Valor Artículo:</strong> ${{ clienteCredito.valorArticulo }}</p>
       <p><strong>Valor del Crédito:</strong> ${{ clienteCredito.valorCredito }}</p>
+      <h3>Cuotas</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Número</th>
+            <th>Precio Cuota</th>
+            <th>Estado</th>
+            <th>Fecha de Vencimiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(cuota, index) in clienteCredito.cuotas" :key="index">
+            <td>{{ index + 1 }}</td>
+            <td>${{ cuota.precio }}</td>
+            <td>{{ cuota.estado }}</td>
+            <td>{{ cuota.fechaVencimiento }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <table v-if="clienteCredito">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Precio Cuota</th>
-          <th>Estado</th>
-          <th>Fecha de Vencimiento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(cuota, index) in clienteCredito.cuotas" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>${{ cuota.precio }}</td>
-          <td>{{ cuota.estado }}</td>
-          <td>{{ cuota.fechaVencimiento }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -33,13 +34,12 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-// Obtenemos el id del cliente desde los parámetros de la ruta
 const route = useRoute()
 const router = useRouter()
 const clienteId = route.params.id
 
-// Datos de ejemplo (en un escenario real estos datos se obtendrían de una API)
-const clientes = [
+// Datos de ejemplo: lista de clientes con sus créditos (normalmente vendrían de un API)
+const allClientes = [
   { 
     id: 1, 
     credito: {
@@ -72,18 +72,31 @@ const clientes = [
         { precio: 300, estado: 'Pendiente', fechaVencimiento: '2023-06-10' }
       ]
     }
+  },
+  { 
+    id: 4, 
+    credito: {
+      valorArticulo: 9000,
+      valorCredito: 4000,
+      cuotas: [
+        { precio: 400, estado: 'Pagada', fechaVencimiento: '2023-04-15' },
+        { precio: 400, estado: 'Pendiente', fechaVencimiento: '2023-05-15' }
+      ]
+    }
   }
 ]
 
 const clienteCredito = ref(null)
 
 onMounted(() => {
-  // Convertimos el id a número para hacer la comparación
-  clienteCredito.value = clientes.find(c => c.id === Number(clienteId))?.credito
+  const cliente = allClientes.find(c => c.id === Number(clienteId))
+  if (cliente) {
+    clienteCredito.value = cliente.credito
+  }
 })
 
 const volver = () => {
-  router.push('/')
+  router.back()
 }
 </script>
 
@@ -91,28 +104,12 @@ const volver = () => {
 .creditos-container {
   padding: 20px;
   max-width: 800px;
-  margin: 20px auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.credito-info {
-  margin-bottom: 20px;
-  font-size: 16px;
-}
-
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
+  margin: 0 auto;
+  text-align: center;
 }
 
 button {
+  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -123,5 +120,16 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
 }
 </style>
