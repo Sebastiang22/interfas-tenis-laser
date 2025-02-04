@@ -24,7 +24,7 @@ const tiendas = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:7071/api/tiendas');
+    const response = await fetch('https://tenis-laser-backend.azurewebsites.net/api/tiendas');
     console.log('Respuesta de la API:', response); // Imprimir la respuesta completa
 
     if (!response.ok) {

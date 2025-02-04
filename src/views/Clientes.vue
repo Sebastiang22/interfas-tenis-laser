@@ -26,7 +26,6 @@
         </tr>
       </tbody>
     </table>
-
     <!-- Modal para mostrar los créditos del cliente -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
@@ -117,7 +116,7 @@ const creditoLoading = ref(false);
 
 onMounted(async () => {
   try {
-    const response = await fetch(`http://localhost:7071/api/clientes/${tiendaId}`);
+    const response = await fetch(`https://tenis-laser-backend.azurewebsites.net/api/clientes/${tiendaId}`);
     
     if (!response.ok) {
       throw new Error(`Error HTTP: ${response.status}`);
@@ -142,7 +141,7 @@ const verCreditos = async (clienteId: number) => {
   showModal.value = true;
 
   try {
-    const response = await fetch(`http://localhost:7071/api/creditos/${clienteId}`);
+    const response = await fetch(`https://tenis-laser-backend.azurewebsites.net/api/creditos/${clienteId}`);
     
     if (!response.ok) {
       throw new Error(`Error HTTP: ${response.status}`);
